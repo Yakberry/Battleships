@@ -14,6 +14,8 @@ import './index.css';
     const [squares, setSquares] = useState(Array(10).fill(0).map(row => new Array(10).fill(null)))
     const [playerX, setPlayerX] = useState(true);
     var ships = props.ships;
+    var turn = props.turn;
+
   
 
     function renderSquare(i, j) {
@@ -26,6 +28,10 @@ import './index.css';
     }
 
     function handleClick(i, j) {
+      if (!turn)
+      {
+        return;
+      }
       const squares_copy = squares.slice();
       if (squares_copy[i][j] != null)
       {
@@ -43,6 +49,8 @@ import './index.css';
       setSquares(squares_copy);
       console.log(i + " " + j)
       console.log(ships)
+      if (squares_copy[i][j] === '*')
+      {props.passTurn("player");}
     }
 
     return (
@@ -71,10 +79,16 @@ import './index.css';
   }
   
   function BoardPlayer(props) {
-    //const [squares, setSquares] = useState(Array(10).fill(0).map(row => new Array(10).fill(null)))
-    const [squares, setSquares] = useState(props.ships)
+    const [squares, setSquares] = useState(Array(10).fill(0).map(row => new Array(10).fill(null)))
     const [playerX, setPlayerX] = useState(true);
+    const [priorities, setPriorities] = useState(Array(10).fill(0).map(row => new Array(10).fill(1)))
     var ships = props.ships;
+    var turn = props.turn;
+    const [map, setMap] = useState(JSON.parse(JSON.stringify(props.ships)));
+
+    useEffect(() => {
+      takeTurn();
+    })
 
     function renderSquare(i, j) {
       return (
@@ -85,21 +99,171 @@ import './index.css';
       );
     }
 
-    function rerender()
-    {
-      setSquares(ships);
+    function sleep(milliseconds) {
+      const date = Date.now();
+      let currentDate = null;
+      do {
+        currentDate = Date.now();
+      } while (currentDate - date < milliseconds);
     }
-    
+
+    function takeTurn()
+    {
+      if (turn)
+      {
+        return;
+      }
+      sleep(300);
+
+      const squares_copy = squares.slice();
+      let targets = assumeTargets(squares_copy);
+      /*let potentialTargets;
+
+      for (let r = 0; r < squares_copy.length; r++)
+      {
+        for (let c = 0; c < squares_copy.length; c++)
+        {
+          if (squares_copy[r][c] === 'X')
+          {
+            
+          }
+        }
+      }*/
+
+      let RNG = getRandInt(0, targets.length-1)
+      let i = targets[RNG][0];
+      let j = targets[RNG][1];
+      console.log(RNG, i, j)
+      
+      
+      console.log("TURN AI 4 " + turn)
+      if (ships[i][j] !== 0)
+      {
+        squares_copy[i][j] = 'X';
+        isDestroyed(ships, squares_copy, i, j);
+        changePriorities(i, j, 2)
+      }
+      else 
+      {
+        squares_copy[i][j] = '*';
+        changePriorities(i, j, -1)
+      }
+      
+      setSquares(squares_copy);
+      console.log(i + " " + j + " - AI turn")
+      mapUpdate();
+      console.log(ships)
+      if (squares_copy[i][j] === '*')
+      {
+        props.passTurn("ai");
+      }
+    }
+
+    function timeout(ms) { //pass a time in milliseconds to this function
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function mapUpdate() 
+    {
+      const mapCopy = map.slice();
+      for (let i = 0; i < map.length; i++)
+      {
+        for (let j = 0; j < map.length; j++)
+        {
+          if (ships[i][j] !== 0 && mapCopy[i][j] !== ships[i][j])
+          {
+            mapCopy[i][j] = ships[i][j];
+          }
+          if (squares[i][j] === "*" || squares[i][j] === "X")
+          {
+            mapCopy[i][j] = squares[i][j];
+          }
+          /*else if (map[i][j] === 0)
+          {
+            map[i][j] = null;
+          }*/
+        }
+      }
+      setMap(mapCopy);
+    }
+
+    function assumeTargets(arr)
+    {
+      let max = -10;
+      let targets = [];
+      for (let i = 0; i < arr.length; i++)
+      {
+        for (let j = 0; j < arr.length; j++)
+        {
+          if (priorities[i][j] > max && arr[i][j] !== '*' && arr[i][j] !== 'X')
+          {
+            //targets.splice();
+            targets = []
+            console.log(targets, i, j)
+            max = priorities[i][j];
+          }
+          if (priorities[i][j] == max && arr[i][j] !== '*' && arr[i][j] !== 'X')
+          {
+            targets.push([i, j])
+          }
+        }
+      }
+      console.log(targets);
+      return targets;
+    }
+
+    function changePriorities(row, col, value)
+    {
+      const newPriorities = priorities.slice()
+      if (row+1 < priorities.length) 
+      {
+        if (value > 0 && row-1 > 0 && squares[row+1][col] === 'X')
+        {
+          newPriorities[row-1][col] += value
+        }
+        newPriorities[row+1][col] += value
+      };
+      if (col+1 < priorities.length) 
+      {
+        if (value > 0 && col-1 > 0 && squares[row][col+1] === 'X')
+        {
+          newPriorities[row][col-1] += value
+        }
+        newPriorities[row][col+1] += value
+      };
+      if (col-1 >= 0) 
+      {
+        if (value > 0 && col+1 < priorities.length && squares[row][col-1] === 'X')
+        {
+          newPriorities[row][col+1] += value
+        }
+        newPriorities[row][col-1] += value
+      };
+      if (row-1 >= 0) 
+      {
+        if (value > 0 && row+1 < priorities.length && squares[row-1][col] === 'X')
+        {
+          newPriorities[row+1][col] += value
+        }
+        newPriorities[row-1][col] += value
+      };
+
+      //newPriorities[row][col] = -1;
+      console.log("Priorities!")
+      console.log(newPriorities)
+      setPriorities(newPriorities);
+    }
+
     return (
       <div>
       <ol>
-      {squares.map((rows, index) => {
+      {map.map((rows, index) => {
         return (
           <li className="board-row">
           {rows.map((cells, cIndex) => {
            // {renderSquare(index, cIndex)}
            return (<Square
-          value={squares[index][cIndex]}
+          value={map[index][cIndex]}
         />)
           })}
           </li>
@@ -112,13 +276,24 @@ import './index.css';
   }
 
   function Game() {
-    const [currentPlayer, setCurrentPlayer] = useState("Gagara");
+    const [turnPlayer, setTurnPlayer] = useState(true);
     const [playerShips, setPlayerShips] = useState(Array(10).fill(0).map(row => new Array(10).fill(0)))
     const [enemyShips, setEnemyShips] = useState(Array(10).fill(0).map(row => new Array(10).fill(0)))
     const [playerName, setPlayerName] = useState();
 
-    //const enemyShips = Array(10).fill(0).map(row => new Array(10).fill(0))
-   // const playerShips = Array(10).fill(0).map(row => new Array(10).fill(0))
+
+    function passTurn(key)
+    {
+      if (key === "player")
+      {
+        setTurnPlayer(false)
+      }
+      else if (key === "ai")
+      {
+        setTurnPlayer(true)
+      }
+      console.log("Turn changed to" + turnPlayer)
+    }
 
     function arrangeShips(arrStart, isPlayer) {
       var arr = arrStart.slice();
@@ -140,7 +315,6 @@ import './index.css';
       }
       else 
       {
-        //arrStart = arr;
         setEnemyShips(arr)
         console.log(arr)
       }
@@ -239,7 +413,6 @@ import './index.css';
       }
 
       arr = newArr;
-      //console.log(arr);
     }
 
     function showEnemyShips()
@@ -265,12 +438,16 @@ import './index.css';
       <div className="game-board">
         <Board 
           ships={enemyShips}
+          turn={turnPlayer}
+          passTurn={passTurn}
         />
       </div>
 
       <div className="game-board">
       <BoardPlayer
         ships={playerShips}
+        turn={turnPlayer}
+        passTurn={passTurn}
       />
       </div>
       
@@ -304,6 +481,9 @@ import './index.css';
     {
       let size = sh[target_row][target_col];  // Size of damaged ship
       let shipCells = [[target_row, target_col]];
+      console.log("isDestroyed fix v")
+      console.log(sh)
+      console.log(battlemap)
       for (let i = 0; i < shipCells.length; i++)  // Placing all cells of damaged ship in shipCells array
       {
         if (shipCells[i][0] + 1 < sh.length && sh[shipCells[i][0] + 1][shipCells[i][1]] === size && !check2DArr(shipCells, shipCells[i][0] + 1, shipCells[i][1])) 
@@ -368,32 +548,4 @@ import './index.css';
       }
     }
 
-  //autoArrangeShips(enemyShips, setEnemyShips);
-  /*return (
-    <div>
-   
-    <div>
-    </div>
-    <div className="board-row">
-     </div>
-  </div>
-  )*/
   
-  /*
-  return (
-      <div>
-      <div className="board-row">
-        {renderSquare(0,0)}
-        {renderSquare(0,1)}
-        {renderSquare(0,2)}
-        {renderSquare(0,3)}
-      </div>
-      <div className="board-row">
-        {renderSquare(1,0)}
-        {renderSquare(1,1)}
-        {renderSquare(1,2)}
-        {renderSquare(1,3)}
-      </div>
-      </div>
-    )
-    */
