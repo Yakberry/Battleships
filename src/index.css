@@ -1,5 +1,5 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
+  font: 18px "Century Gothic", Futura, sans-serif;
   margin: 20px;
 }
 
@@ -22,15 +22,15 @@ ol, ul {
   background: #fff;
   border: 1px solid #999;
   float: left;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: bold;
-  line-height: 34px;
-  height: 34px;
+  line-height: 40px;
+  height: 40px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 40px;
 }
 
 .square:focus {
@@ -44,6 +44,20 @@ ol, ul {
 .game {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.log {
+  height: 150px;
+  overflow-y: scroll;
+  white-space: pre-line;
+  display: flex;
+  flex-direction: column-reverse;
+  margin-left: 30px;
+  margin-right: 100px;
+  width: 90%;
 }
 
 .game-info {
@@ -53,4 +67,75 @@ ol, ul {
 
 .game-board {
   margin-right: 20px;
+}
+
+.menu-container {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.menu-button {
+  align-self: center;
+  width: 30%;
+  height: 30%;
+  font: 24px "Century Gothic", Futura, sans-serif;
+}
+
+.menu-form {
+  align-self: center;
+  width: 30%;
+  height: 30%;
+  font: 24px "Century Gothic", Futura, sans-serif;
+  display: flex;
+  align-items: center;
+}
+
+.menu-textarea {
+  height: 40px;
+  width: 60%;
+  font: 24px "Century Gothic", Futura, sans-serif;
+}
+
+.menu-label {
+  font: 90px "Century Gothic", Futura, sans-serif;
+  margin-top: 15%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.popup-wrapper {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.popup {
+  display: flex;
+  height: 70px;
+  width: 280px;
+  margin-top: 20%;
+  font: 24px "Century Gothic", Futura, sans-serif;
+  font-weight: bold;
+  justify-content: flex-start;
+  border: 1px solid;
+  padding: 10px;
+  box-shadow: 0px 0px 30px #0e0e0b;
+  background-color: rgb(241, 241, 241);
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.game-log {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
 }

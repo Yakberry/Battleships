@@ -519,6 +519,8 @@ import './index.css';
         shipDestruction(shipCells, battlemap);
         console.log("Destroyed!")
       }
+
+      return flagDestroyed;
     }
 
     function check2DArr(arr, value, value2) {   // Helps finding all cells of ship
@@ -547,5 +549,3 @@ import './index.css';
         }
       }
     }
-
-  
