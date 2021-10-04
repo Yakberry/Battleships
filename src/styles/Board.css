@@ -1,0 +1,17 @@
+.board-row:after {
+    clear: both;
+    content: "";
+    display: block;
+    
+  }
+
+  .horizontal-coordinates {
+    display: flex;
+  }
+
+  .coordinate {
+    white-space: break-spaces;
+    width: 39px;
+    align-content: center;
+    text-align-last: center;
+  }

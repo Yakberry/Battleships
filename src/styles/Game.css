@@ -3,44 +3,6 @@ body {
   margin: 20px;
 }
 
-ol, ul {
-  padding-left: 30px;
-}
-
-.board-row:after {
-  clear: both;
-  content: "";
-  display: block;
-  
-}
-
-.status {
-  margin-bottom: 10px;
-}
-
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 28px;
-  font-weight: bold;
-  line-height: 40px;
-  height: 40px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 40px;
-}
-
-.square:focus {
-  outline: none;
-}
-
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
 .game {
   display: flex;
   flex-direction: row;
@@ -50,7 +12,7 @@ ol, ul {
 }
 
 .log {
-  height: 150px;
+  height: 145px;
   overflow-y: scroll;
   white-space: pre-line;
   display: flex;
@@ -60,14 +22,31 @@ ol, ul {
   width: 90%;
 }
 
-.game-info {
-  /*margin-left: 20px;*/
-  margin-top: 370px;
+.game-log {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 
 .game-board {
   margin-right: 20px;
 }
+
+.back-button {
+  font: 18px "Century Gothic", Futura, sans-serif; 
+  margin-bottom: 2.5%;
+}
+
+.label-name {
+  margin-right: 10%;
+  width: 30%;
+}
+
+.label-turn {
+  display: flex;
+  justify-content: center;
+}
+
 
 .menu-container {
   width: 100%;
@@ -121,7 +100,7 @@ ol, ul {
   display: flex;
   height: 70px;
   width: 280px;
-  margin-top: 20%;
+  margin-top: 25%;
   font: 24px "Century Gothic", Futura, sans-serif;
   font-weight: bold;
   justify-content: flex-start;
@@ -134,8 +113,8 @@ ol, ul {
   flex-direction: column;
 }
 
-.game-log {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
+.popup-back-button {
+  font: 18px "Century Gothic", Futura, sans-serif; 
+  margin-top: 10px;
 }
+
