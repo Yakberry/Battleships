@@ -119,7 +119,26 @@ import {getRandInt} from '../global';
           let colRand = getRandInt(0, 9);
           if (isEmpty(rowRand, colRand, arr)) {
             let dirRand = getRandInt(0, 3);
-            switch (dirRand) 
+            let incRow;
+            let incCol;
+            if (dirRand > 1)
+            {
+              incRow = dirRand%2;
+              incCol = dirRand%2-1;
+            }
+            else 
+            {
+              incRow = dirRand%2-1;
+              incCol = dirRand%2;
+            }
+
+            if (notOccupied(rowRand, colRand, incRow, incCol, size, arr))
+            {
+              placeShip(rowRand, colRand, incRow, incCol, size, arr);
+              success = true;
+            }
+
+            /*switch (dirRand) 
             {
               case 3: //left
               if ((colRand >= size-1) && (notOccupied(rowRand, colRand, 0, -1, size, arr))) 
@@ -151,22 +170,32 @@ import {getRandInt} from '../global';
                 placeShip(rowRand, colRand, -1, 0, size, arr)
                 success = true;
               }
-            }
+            }*/
           }
         }
       }
     }
 
     function notOccupied(row, col, incRow, incCol, size, arr) {   // True if each of {size} squares in 
-      let suceess = true;                                         // chosen direction are neither adjacent to
-      for (size; size > 0; size--) {                              // nor occupied by other ships
-        if (arr[row][col] !== 0)
+      let suceess = true;                                         // nor occupied by other ships
+      if (!(row + size * incRow > arr.length - 1                  // chosen direction are neither adjacent to
+          || row + size * incRow < 0
+          || col + size * incCol > arr.length - 1
+          || col + size * incCol < 0))
+         
         {
-          suceess = false;
+          console.log("!!! " + arr.length)
+          for (size; size > 0; size--) {                             
+            if (arr[row][col] !== 0)
+            {
+              suceess = false;
+            }
+            row += incRow;
+            col += incCol;
+          }
         }
-        row += incRow;
-        col += incCol;
-      }
+        else suceess = false;
+        
       return suceess;
     }
 
