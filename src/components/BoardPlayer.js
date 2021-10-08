@@ -26,15 +26,6 @@ function BoardPlayer(props) {
       console.log(mapPrep);
       setMap(mapPrep);
     }, []);
-    
-
-    function sleep(milliseconds) {
-      const date = Date.now();
-      let currentDate = null;
-      do {
-        currentDate = Date.now();
-      } while (currentDate - date < milliseconds);
-    }
 
     const takeTurn = useCallback(() => {
       if (!gameEnd)
@@ -43,7 +34,6 @@ function BoardPlayer(props) {
         {
           return;
         }
-        sleep(200);
 
         const squares_copy = squares.slice();
         let targets = assumeTargets(squares_copy);    // Array of all squares with same max priority
